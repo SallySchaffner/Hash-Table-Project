@@ -13,22 +13,22 @@ private:
     size_t buckets;
     std::function<size_t(const K&)> hashFunction;
 
-  void resizeTable() {
-  // Double the table size and rehash all elements
-  size_t newTableSize = table.buckets() * 2;
-  std::vector<std::list<std::pair<K, V>>> newTable(newTableSize);
+    void resizeTable() {
+        // Double the table size and rehash all elements
+        size_t newTableSize = table.buckets() * 2;
+        std::vector<std::list<std::pair<K, V>>> newTable(newTableSize);
 
-  for (const auto& chain : table) {
-      for (const auto& pair : chain) {
-          size_t index = hashFunction(pair.first) % newTableSize;
-          newTable[index].push_back(pair);
-      }
+        for (const auto& chain : table) {
+            for (const auto& pair : chain) {
+                size_t index = hashFunction(pair.first) % newTableSize;
+                newTable[index].push_back(pair);
+            }
+        }
+        table = std::move(newTable);
+        buckets = newTableSize;
     }
-    table = std::move(newTable);
-    buckets = newTableSize;
-  }
 
-  public:
+public:
     HashTable(size_t initialSize = 10, std::function<size_t(const K&)>   hashFunc = std::hash<K>{}) : size(0), hashFunction(hashFunc) {
         table.resize(initialSize);
         buckets = table.capacity();
@@ -61,18 +61,18 @@ private:
 
     std::vector<V> getByIndex(size_t index)
     {
-      if (table[index].size() > 0)
-      {
-         std::vector<V> items(table[index].size());
-          int i = 0;
-          for (const auto &pair : table[index] )
+        if (table[index].size() > 0)
+        {
+            std::vector<V> items(table[index].size());
+            int i = 0;
+            for (const auto& pair : table[index])
             {
-              items[i] = pair.second;
-              i++;
+                items[i] = pair.second;
+                i++;
             }
-          return items;
-      }
-        return std::vector<V>(); 
+            return items;
+        }
+        return std::vector<V>();
     }
 
     bool remove(const K& key) {
@@ -85,7 +85,8 @@ private:
                 it = chain.erase(it);
                 size--;
                 return true;
-            } else {
+            }
+            else {
                 ++it;
             }
         }
@@ -111,38 +112,87 @@ private:
         return static_cast<double>(size) / table.size();
     }
 
-  int getBuckets() const {
-    return buckets;
-  }
+    int getBuckets() const {
+        return buckets;
+    }
 
     int countCollisions() const {
-      int collisionCount = 0;
-      for (const auto& chain : table) {
-          if (chain.size() > 1) {
-              collisionCount += static_cast<int>(chain.size()) - 1;
-          }
-      }
-      return collisionCount;
-  }
-
-  int maxBucketSize() const{
-    int largestBucket = 0;
-    for (const auto& chain : table) {
-      if (chain.size() > largestBucket) {
-          largestBucket = static_cast<int>(chain.size());
-      }
+        int collisionCount = 0;
+        for (const auto& chain : table) {
+            if (chain.size() > 1) {
+                collisionCount += static_cast<int>(chain.size()) - 1;
+            }
+        }
+        return collisionCount;
     }
-    return largestBucket;
-  }
 
-  void setHashFunction(std::function<size_t(const K&)> hashFunc) {
-      hashFunction = hashFunc;
-  }
+    int maxBucketSize() const {
+        int largestBucket = 0;
+        for (const auto& chain : table) {
+            if (chain.size() > largestBucket) {
+                largestBucket = static_cast<int>(chain.size());
+            }
+        }
+        return largestBucket;
+    }
 
-  size_t hash(const K& key) {
-      return hashFunction(key) % table.size();
-  }
+    void setHashFunction(std::function<size_t(const K&)> hashFunc) {
+        hashFunction = hashFunc;
+    }
+
+    size_t hash(const K& key) {
+        return hashFunction(key) % table.size();
+    }
+
+    class Iterator {
+    private:
+        using OuterIter = typename std::vector<std::list<std::pair<K, V>>>::iterator;
+        using InnerIter = typename std::list<std::pair<K, V>>::iterator;
+
+        OuterIter outer;
+        OuterIter outerEnd;
+        InnerIter inner;
+
+        void advanceToNextValid() {
+            while (outer != outerEnd && inner == outer->end()) {
+                ++outer;
+                if (outer != outerEnd) {
+                    inner = outer->begin();
+                }
+            }
+        }
+
+    public:
+        Iterator(OuterIter outer, OuterIter outerEnd)
+            : outer(outer), outerEnd(outerEnd), inner(outer != outerEnd ? outer->begin() : InnerIter()) {
+            advanceToNextValid();
+        }
+
+        std::pair<K, V>& operator*() {
+            return *inner;
+        }
+
+        Iterator& operator++() {
+            ++inner;
+            advanceToNextValid();
+            return *this;
+        }
+
+        bool operator==(const Iterator& other) const {
+            return outer == other.outer && (outer == outerEnd || inner == other.inner);
+        }
+
+        bool operator!=(const Iterator& other) const {
+            return !(*this == other);
+        }
+    };
+
+    Iterator begin() {
+        return Iterator(table.begin(), table.end());
+    }
+
+    Iterator end() {
+        return Iterator(table.end(), table.end());
+    }
 
 };
-
-

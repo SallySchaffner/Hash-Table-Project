@@ -62,7 +62,7 @@ void schedule::findInstructor(string target) {
   }
 }
 
-void schedule::print() {
+/* void schedule::print() {
   bool first = true;
   int maxItems = semesterSchedule.maxBucketSize();
   for (size_t i = 0; i < semesterSchedule.getSize(); i++) {
@@ -79,7 +79,14 @@ void schedule::print() {
       cout << endl;
     }
   }
+}*/
+
+void schedule::print() {
+    for (auto it = semesterSchedule.begin(); it != semesterSchedule.end(); ++it) {
+        std::cout << it->first << ": " << it->second << std::endl;
+    }
 }
+
 
 void schedule::initSchedule(ifstream &inFile) {
   string sub, cat, sec, com, ses, ins;
