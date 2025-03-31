@@ -133,8 +133,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HashTable.h" />
-    <ClInclude Include="schedule.h" />
     <ClInclude Include="scheduleItem.h" />
+    <ClInclude Include="schedule.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Summer2022.csv" />

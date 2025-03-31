@@ -6,30 +6,8 @@
 #include <functional>
 using namespace std;
 
-class scheduleItem
+struct SchedItem
 {
-  public:
-  scheduleItem(string="", string="", string="", string="", string="", string="", int=0, int=0, int=0);
-  void getscheduleItem(string &sub, string &cat, string &sec, string &com, string &ses, string &ins, int &uni, int &totE, int &capE);
-
-    void print();
-    void printHeader();
-
-    bool operator==(const scheduleItem& operand2) const;
-    bool operator!=(const scheduleItem& operand2) const;
-    bool operator>=(const scheduleItem& operand2) const;
-
-    string getSubject() const { return subject; }
-    string getCatalog() const { return catalog; }
-    string getSection() const { return section; }
-    string getComponent(){ return component; }
-    string getSession(){ return session; }
-    string getInstructor(){ return instructor; }
-    int getUnits(){ return units; }
-    int getTotEnrl(){ return totEnrl; }
-    int getCapEnrol(){ return capEnrl; }
-
-  private:
     string subject;
     string catalog;
     string section;
@@ -40,6 +18,41 @@ class scheduleItem
     int totEnrl;
     int capEnrl;
 
+    
+    SchedItem(string sub = "", string cat = "", string sec = "", string com = "", string ses = "", string ins = "", int uni = 0, int totE = 0, int capE = 0) :
+        subject(sub), catalog(cat), section(sec), component(com), session(ses), instructor(ins), units(uni), totEnrl(totE), capEnrl(capE) {
+    };
+};
+
+class scheduleItem
+{
+public:
+
+    scheduleItem()
+    {
+        sItem = SchedItem();
+    }
+
+    scheduleItem(string sub, string cat, string sec, string com, string ses, string ins, int uni, int totE, int capE)
+    {
+        sItem = SchedItem(sub, cat, sec, com, ses, ins, uni, totE, capE);
+    }
+    
+    void getScheduleItem(SchedItem& item) {
+        item = sItem;
+    };
+
+    string makeKey();
+    
+    void print();
+    void printHeader();
+
+    bool operator==(const SchedItem& operand2) const;
+    bool operator!=(const SchedItem& operand2) const;
+    bool operator>(const SchedItem& operand2) const;
+
+private:
+    SchedItem sItem;
 };
 
 #endif

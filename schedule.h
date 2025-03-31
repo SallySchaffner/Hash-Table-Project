@@ -8,7 +8,7 @@
 
 class schedule
 {
-  public:
+  public:  
     schedule(int maxSize);
     void addEntry(scheduleItem &);
     void print();

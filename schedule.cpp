@@ -13,7 +13,7 @@ void schedule::addEntry(scheduleItem &item) {
 }
 
 string schedule::getKey(scheduleItem &item) {
-  return item.getSubject() + '_' + item.getCatalog() + '_' + item.getSection();
+    return item.makeKey();
 }
 
 void schedule::findSub(string target) {
@@ -23,8 +23,10 @@ void schedule::findSub(string target) {
     items = semesterSchedule.getByIndex(i);
     if (items.size() > 0) {
       for (int j = 0; j < items.size(); j++) {
-        if (items[j].getSubject() == target)
-          items[j].print();
+          SchedItem item;
+          items[j].getScheduleItem(item);
+          if (item.subject == target)
+            items[j].print();
       }
     }
   }
@@ -37,7 +39,9 @@ void schedule::findSubCat(string target1, string target2) {
     items = semesterSchedule.getByIndex(i);
     if (items.size() > 0) {
       for (int j = 0; j < items.size(); j++) {
-          if (items[j].getSubject() == target1 && items[j].getCatalog() == target2)
+          SchedItem item;
+          items[j].getScheduleItem(item);
+          if (item.subject == target1 && item.catalog == target2)
             items[j].print();
       }
     }
@@ -52,7 +56,9 @@ void schedule::findInstructor(string target) {
     if (items.size() > 0) {
       for (int j = 0; j < items.size(); j++) {
         string ins, last;
-        ins = items[j].getInstructor();
+        SchedItem item;
+        items[j].getScheduleItem(item);
+        ins = item.instructor;
         int pos = ins.find(",", 0); // Extract the last name
         last = ins.substr(0, pos);
         if (last == target)
@@ -62,7 +68,7 @@ void schedule::findInstructor(string target) {
   }
 }
 
-/* void schedule::print() {
+void schedule::print() {
   bool first = true;
   int maxItems = semesterSchedule.maxBucketSize();
   for (size_t i = 0; i < semesterSchedule.getSize(); i++) {
@@ -79,12 +85,6 @@ void schedule::findInstructor(string target) {
       cout << endl;
     }
   }
-}*/
-
-void schedule::print() {
-    for (auto it = semesterSchedule.begin(); it != semesterSchedule.end(); ++it) {
-        std::cout << it->first << ": " << it->second << std::endl;
-    }
 }
 
 
@@ -101,7 +101,7 @@ void schedule::initSchedule(ifstream &inFile) {
 
   inFile.ignore(256, '\n'); // ignore header line
   getline(inFile, sub, ',');
-  while (!inFile.eof()) {
+  while (  !inFile.eof()) {
     getline(inFile, cat, ',');
     getline(inFile, sec, ',');
     getline(inFile, com, ',');
@@ -113,6 +113,7 @@ void schedule::initSchedule(ifstream &inFile) {
     inFile.get();             // discard ,
     inFile.ignore(256, '\n'); // ignore the rest of the line
 
+    
     scheduleItem lineItem(sub, cat, sec, com, ses, ins, uni, totE, capE);
     addEntry(lineItem);
 
