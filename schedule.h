@@ -3,7 +3,8 @@
 
 #include <iostream>
 #include<fstream>
-#include "HashTable.h"
+#include <unordered_map>
+#include <utility>
 #include "scheduleItem.h"
 
 class schedule
@@ -24,7 +25,7 @@ class schedule
 
   private:
 
-    HashTable<string, scheduleItem> semesterSchedule;
+    unordered_map<string, scheduleItem> semesterSchedule;
 };
 
 
