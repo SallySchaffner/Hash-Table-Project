@@ -108,15 +108,12 @@ void schedule::initSchedule(ifstream &inFile) {
     getline(inFile, ses, ',');
     inFile >> minU >> ch >> uni >> ch >> totE >> ch >> capE >> ch;
     getline(inFile, org, ',');
-    inFile.get(); // discard first double quote
+    inFile.get();  // discard first double quote
     getline(inFile, ins, '\"');
-    inFile.get();             // discard ,
+    inFile.get();      // discard ,
     inFile.ignore(256, '\n'); // ignore the rest of the line
-
-    
     scheduleItem lineItem(sub, cat, sec, com, ses, ins, uni, totE, capE);
     addEntry(lineItem);
-
     getline(inFile, sub, ',');
   }
 }

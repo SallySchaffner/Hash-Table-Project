@@ -7,6 +7,52 @@
 // Hash table class using separate chaining
 template <typename K, typename V>
 class HashTable {
+    // -------------------- Iterator Definition --------------------
+    class Iterator {
+    private:
+        const std::vector<std::list<std::pair<K, V>>> *tableRef;
+        size_t bucketIndex;
+        typename std::list<std::pair<K, V>>::const_iterator listIt;
+
+        void advanceToNextValid() {
+            while (bucketIndex < tableRef->size() && listIt == (*tableRef)[bucketIndex].end()) {
+                ++bucketIndex;
+                if (bucketIndex < tableRef->size()) {
+                    listIt = (*tableRef)[bucketIndex].begin();
+                }
+            }
+        }
+
+    public:
+        Iterator(const std::vector<std::list<std::pair<K, V>>>* t, size_t b, typename std::list<std::pair<K, V>>::const_iterator it)
+            : tableRef(t), bucketIndex(b), listIt(it) {
+            advanceToNextValid();
+        }
+
+        const std::pair<K, V>& operator*() const {
+            return *listIt;
+        }
+
+        Iterator& operator++() {
+            ++listIt;
+            advanceToNextValid();
+            return *this;
+        }
+
+        bool operator!=(const Iterator& other) const {
+            return bucketIndex != other.bucketIndex || listIt != other.listIt;
+        }
+    };
+
+    Iterator begin() const {
+        return Iterator(&table, 0, table[0].begin());
+    }
+
+    Iterator end() const {
+        return Iterator(&table, 0, {});
+    }
+  // -------------------- HashTable Core --------------------
+
 private:
     std::vector<std::list<std::pair<K, V>>> table;
     size_t size;
@@ -19,9 +65,9 @@ private:
         std::vector<std::list<std::pair<K, V>>> newTable(newTableSize);
 
         for (const auto& chain : table) {
-            for (const auto& pair : chain) {
-                size_t index = hashFunction(pair.first) % newTableSize;
-                newTable[index].push_back(pair);
+            for (const auto& std::pair : chain) {
+                size_t index = hashFunction(std::pair.first) % newTableSize;
+                newTable[index].push_back(std::pair);
             }
         }
         table = std::move(newTable);
@@ -144,55 +190,5 @@ public:
         return hashFunction(key) % table.size();
     }
 
-    class Iterator {
-    private:
-        using OuterIter = typename std::vector<std::list<std::pair<K, V>>>::iterator;
-        using InnerIter = typename std::list<std::pair<K, V>>::iterator;
-
-        OuterIter outer;
-        OuterIter outerEnd;
-        InnerIter inner;
-
-        void advanceToNextValid() {
-            while (outer != outerEnd && inner == outer->end()) {
-                ++outer;
-                if (outer != outerEnd) {
-                    inner = outer->begin();
-                }
-            }
-        }
-
-    public:
-        Iterator(OuterIter outer, OuterIter outerEnd)
-            : outer(outer), outerEnd(outerEnd), inner(outer != outerEnd ? outer->begin() : InnerIter()) {
-            advanceToNextValid();
-        }
-
-        std::pair<K, V>& operator*() {
-            return *inner;
-        }
-
-        Iterator& operator++() {
-            ++inner;
-            advanceToNextValid();
-            return *this;
-        }
-
-        bool operator==(const Iterator& other) const {
-            return outer == other.outer && (outer == outerEnd || inner == other.inner);
-        }
-
-        bool operator!=(const Iterator& other) const {
-            return !(*this == other);
-        }
-    };
-
-    Iterator begin() {
-        return Iterator(table.begin(), table.end());
-    }
-
-    Iterator end() {
-        return Iterator(table.end(), table.end());
-    }
-
+    
 };

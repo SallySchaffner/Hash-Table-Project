@@ -2,6 +2,7 @@
 //
 
 #include <iostream>
+#include <iomanip>
 #include "schedule.h"
 
 using namespace std;
@@ -51,14 +52,26 @@ int main()
             semester.print();
             break;
         case 5:
+            for (auto it = semester.begin(); it != semester.end(); ++it) {
+                vector<scheduleItem> items = *it;
+                for (int i = 0; i < items.size(); i++)
+                {
+                    SchedItem item;
+                    items[i].getScheduleItem(item);
+                    cout << setw(3) << item.subject << setw(9) << item.catalog << setw(10) << item.section << "     " << item.instructor << endl;
+                }
+            }
+            break;
+
+        case 6: 
             semester.statistics();
             break;
-        case 6:
+        case 7:
             break;
         default:
             cout << "Invalid choice, try again." << endl;
         }
-    } while (choice != 6);
+    } while (choice != 7);
 
     return 0;
 }
@@ -70,9 +83,10 @@ void showMenu()
     cout << "1 - Search by subject" << endl;
     cout << "2 - Search by subject and category" << endl;
     cout << "3 - Search by instructor" << endl;
-    cout << "4 - Print all entries." << endl;
-    cout << "5 - Show statistics." << endl;
-    cout << "6 - Quit." << endl;
+    cout << "4 - Print all using print function" << endl;
+    cout << "5 - Print all using iterator" << endl;
+    cout << "6 - Show statistics." << endl;
+    cout << "7 - Quit." << endl;
     cout << endl;
 }
 
