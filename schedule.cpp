@@ -41,9 +41,7 @@ void schedule::findSubCat(string target1, string target2) {
         {
             it->second.print();
             cout << endl;
-        }
-            
-            
+        }  
     }
 }
 
