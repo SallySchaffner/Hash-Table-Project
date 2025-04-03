@@ -11,7 +11,7 @@ class schedule
 {
   public:  
     schedule(int maxSize);
-    void addEntry(scheduleItem &);
+    void addEntry(string, scheduleItem &);
     void print();
     void initSchedule(ifstream&);
     void findSub(string target);
@@ -26,6 +26,7 @@ class schedule
   private:
 
     unordered_map<string, scheduleItem> semesterSchedule;
+    vector<string> getFields(string line);
 };
 
 

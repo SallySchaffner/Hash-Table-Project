@@ -37,8 +37,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Summer2022.csv">
+    <None Include="Full Summer2022.csv">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="Filtered_Summer2022.csv" />
   </ItemGroup>
 </Project>

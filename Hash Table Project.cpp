@@ -5,7 +5,7 @@
 #include "schedule.h"
 
 using namespace std;
-const string FILENAME = "Summer2022.csv";
+const string FILENAME = "Filtered_Summer2022.csv";
 void showMenu();
 int strHashFunction(string key);
 
@@ -23,7 +23,7 @@ int main()
         return -1;
     }
 
-    semester.setHashFunction(strHashFunction);
+    //semester.setHashFunction(strHashFunction);
     semester.initSchedule(inFile);
 
     do
@@ -51,7 +51,8 @@ int main()
             semester.print();
             break;
         case 5:
-            semester.statistics();
+            //semester.statistics();
+            cout << "Not yet implemented" << endl;
             break;
         case 6:
             break;

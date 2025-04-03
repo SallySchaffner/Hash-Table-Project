@@ -1,6 +1,7 @@
 #include "schedule.h"
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 
@@ -8,8 +9,8 @@ using namespace std;
 
 schedule::schedule(int size): semesterSchedule(size){};
 
-void schedule::addEntry(scheduleItem &item) {
-  string key = getKey(item);
+void schedule::addEntry(string key, scheduleItem& item)
+{
   pair<string, scheduleItem> entry(key, item);
   semesterSchedule.insert(entry);
 }
@@ -19,114 +20,113 @@ string schedule::getKey(scheduleItem &item) {
 }
 
 void schedule::findSub(string target) {
-    //td::unordered_map<std::string,double>::const_iterator got = mymap.find (input);
     unordered_map<string, scheduleItem>::const_iterator it;
-    //for ( auto it = mymap.begin(); it != mymap.end(); ++it 
     for (auto it = semesterSchedule.begin(); it != semesterSchedule.end(); ++it)
     {
-        SchedItem item;
-        it->second.getScheduleItem(item);
+        SchedItem item = it->second.getScheduleItem();
         if (item.subject == target)
             it->second.print();
-   
-
     }
-
-  /*int maxItems = semesterSchedule.maxBucketSize();
-  for (size_t i = 0; i < semesterSchedule.getSize(); i++) {
-    vector<scheduleItem> items(maxItems);
-    items = semesterSchedule.getByIndex(i);
-    if (items.size() > 0) {
-      for (int j = 0; j < items.size(); j++) {
-          SchedItem item;
-          items[j].getScheduleItem(item);
-          if (item.subject == target)
-            items[j].print();
-      }
-    }
-  }*/
 }
 
 void schedule::findSubCat(string target1, string target2) {
-  /* int maxItems = semesterSchedule.maxBucketSize();
-  for (size_t i = 0; i < semesterSchedule.getSize(); i++) {
-    vector<scheduleItem> items(maxItems);
-    items = semesterSchedule.getByIndex(i);
-    if (items.size() > 0) {
-      for (int j = 0; j < items.size(); j++) {
-          SchedItem item;
-          items[j].getScheduleItem(item);
-          if (item.subject == target1 && item.catalog == target2)
-            items[j].print();
-      }
+    unordered_map<string, scheduleItem>::const_iterator it;
+    for (auto it = semesterSchedule.begin(); it != semesterSchedule.end(); ++it)
+    {
+        SchedItem item = it->second.getScheduleItem();
+        if (item.subject == target1 && item.catalog == target2)
+            it->second.print();
     }
-  }*/
 }
 
 void schedule::findInstructor(string target) {
- /* int maxItems = semesterSchedule.maxBucketSize();
-  for (size_t i = 0; i < semesterSchedule.getSize(); i++) {
-    vector<scheduleItem> items(maxItems);
-    items = semesterSchedule.getByIndex(i);
-    if (items.size() > 0) {
-      for (int j = 0; j < items.size(); j++) {
-        string ins, last;
-        SchedItem item;
-        items[j].getScheduleItem(item);
-        ins = item.instructor;
-        int pos = ins.find(",", 0); // Extract the last name
-        last = ins.substr(0, pos);
-        if (last == target)
-          items[j].print();
-      }
+    unordered_map<string, scheduleItem>::const_iterator it;
+    for (auto it = semesterSchedule.begin(); it != semesterSchedule.end(); ++it)
+    {
+        SchedItem item = it->second.getScheduleItem();
+        string lastName;
+        int pos = item.instructor.find(",", 0); // Extract the last name
+        lastName = item.instructor.substr(0, pos);
+        if (lastName == target)
+            it->second.print();
     }
-  }*/
 }
 
 void schedule::print() {
+    unordered_map<string, scheduleItem>::const_iterator it;
     for (auto it = semesterSchedule.begin(); it != semesterSchedule.end(); ++it)
     {
-        SchedItem item;
-        it->second.getScheduleItem(item);
         it->second.print();
         cout << endl;
     }
-  }
 }
 
 
-void schedule::initSchedule(ifstream &inFile) {
-  string sub, cat, sec, com, ses, ins;
-  int uni, totE, capE;
-  char ch;
+void schedule::initSchedule(ifstream &inFile) 
+{
+    SchedItem item;
+    vector<string> headers;
+    string line;
 
-  // Unused fields
-  int minU;
-  string org, header;
-  //inFile >> sub;
+    // Read and discard the first line
+    getline(inFile, line);
+    
+    /* 
+        Read the rest of the file.  For each row:
+        Extract the fields into variables and create a scheduleItem object
+        Create the key for the record
+        Insert the key and scheduleItem object into the hash table.
+    */
 
-  //inFile.ignore(256, '\n'); // ignore header line
-  //getline(inFile, sub, ',');
-  getline(inFile, header);
-  while (getline(inFile, sub, ',')) {
-    getline(inFile, cat, ',');
-    getline(inFile, sec, ',');
-    getline(inFile, com, ',');
-    getline(inFile, ses, ',');
-    inFile >> minU >> ch >> uni >> ch >> totE >> ch >> capE >> ch;
-    getline(inFile, org, ',');
-    inFile.get(ch); // discard first double quote
-    getline(inFile, ins, '\"');
-    //inFile.get(ch);          discard ,
-    inFile.ignore(256, '\n'); // ignore the rest of the line
-    scheduleItem lineItem(sub, cat, sec, com, ses, ins, uni, totE, capE);
-    addEntry(lineItem);
-    //getline(inFile, sub, ',');
-  }
+    while(getline(inFile, line))
+    {
+        /*
+        Struct field names:
+        Tokens(0 - 4) are strings: subject, catalog, section, component, session
+        Tokens(5 - 7)  need to be converted to int: units, totEnrl, capEnrl
+        Token 8 is a string: instructor
+        */
+        
+        vector<string> fields = getFields(line);
+        scheduleItem itemObj(fields[0], fields[1], fields[2], fields[3], fields[4], stoi(fields[5]), stoi(fields[6]), stoi(fields[7]), fields[8]);
+        string key = itemObj.makeKey();
+        addEntry(key, itemObj);
+    }
+}
+
+vector<string> schedule::getFields(string line)
+{
+    std::stringstream ss(line);
+    std::vector<std::string> tokens;
+    std::string token;
+    bool insideQuotes = false;
+    char ch;
+
+    while (ss.get(ch)) {
+        if (ch == '"') {
+            insideQuotes = !insideQuotes; // toggle state
+        }
+        else if (ch == ',' && !insideQuotes) {
+            tokens.push_back(token);
+            token.clear();
+        }
+        else {
+            token += ch;
+        }
+    }
+    if (!token.empty()) {
+        tokens.push_back(token); // push the last token
+    }
+
+    for (const auto field : tokens)
+        cout << field << " ";
+    cout << endl;
+
+    return tokens;
 }
 
 void schedule::statistics() {
-  cout << "Size of the hash table: " << semesterSchedule.getSize() << endl;
+  /*cout << "Size of the hash table: " << semesterSchedule.getSize() << endl;
   cout << "Number of buckets in hash table: " << semesterSchedule.getBuckets()
        << endl;
   cout << "Load factor of the hash table: " << semesterSchedule.getLoadFactor()
@@ -134,12 +134,12 @@ void schedule::statistics() {
   cout << "Number of collisions in the hash table: "
        << semesterSchedule.countCollisions() << endl;
   cout << "Longest chain: " << semesterSchedule.maxBucketSize() << endl;
-  cout << endl;
-}
+  cout << endl; */
+} 
 
-size_t schedule::getTableSize() { return semesterSchedule.getSize(); }
+size_t schedule::getTableSize() { /*return semesterSchedule.getSize();*/ return 10;  }
 
-void schedule::setHashFunction(
+/* void schedule::setHashFunction)
     std::function<size_t(const std::string &)> hashFunc) {
   semesterSchedule.setHashFunction(hashFunc);
-}
+}*/
