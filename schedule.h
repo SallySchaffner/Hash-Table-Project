@@ -11,7 +11,7 @@ class schedule
 {
   public:  
     schedule(int maxSize);
-    void addEntry(string, scheduleItem &);
+    void addEntry(string, scheduleItem);
     void print();
     void initSchedule(ifstream&);
     void findSub(string target);

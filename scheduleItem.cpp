@@ -15,7 +15,7 @@ void scheduleItem::print()
   cout << setw(3) << sItem.subject << setw(9) << sItem.catalog << setw(10) << sItem.section;
   cout << setw(10) << sItem.component << setw(11) << sItem.session;
   cout << setw(8) << sItem.units << setw(8) << sItem.totEnrl << setw(9) << sItem.capEnrl;
-  cout << "     " << sItem.instructor << endl;
+  cout << "     " << sItem.instructor;
 }
 
 void scheduleItem::printHeader()

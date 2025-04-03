@@ -26,9 +26,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="HashTable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="schedule.h">
       <Filter>Header Files</Filter>
     </ClInclude>

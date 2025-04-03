@@ -34,7 +34,7 @@ public:
 
     scheduleItem(string sub, string cat, string sec, string com, string ses, int uni, int totE, int capE, string ins)
     {
-        SchedItem sItem = SchedItem(sub, cat, sec, com, ses, uni, totE, capE, ins);
+        sItem = SchedItem(sub, cat, sec, com, ses, uni, totE, capE, ins);
     }
     
     SchedItem& getScheduleItem() { return sItem; }

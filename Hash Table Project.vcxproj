@@ -132,7 +132,6 @@
     <ClCompile Include="scheduleItem.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="HashTable.h" />
     <ClInclude Include="scheduleItem.h" />
     <ClInclude Include="schedule.h" />
   </ItemGroup>

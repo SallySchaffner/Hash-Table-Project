@@ -9,10 +9,10 @@ using namespace std;
 
 schedule::schedule(int size): semesterSchedule(size){};
 
-void schedule::addEntry(string key, scheduleItem& item)
+void schedule::addEntry(string key, scheduleItem item)
 {
-  pair<string, scheduleItem> entry(key, item);
-  semesterSchedule.insert(entry);
+    pair<string, scheduleItem> entry(key, item);
+    semesterSchedule.insert(entry);
 }
 
 string schedule::getKey(scheduleItem &item) {
@@ -25,7 +25,10 @@ void schedule::findSub(string target) {
     {
         SchedItem item = it->second.getScheduleItem();
         if (item.subject == target)
+        {
             it->second.print();
+            cout << endl;
+        }
     }
 }
 
@@ -35,7 +38,12 @@ void schedule::findSubCat(string target1, string target2) {
     {
         SchedItem item = it->second.getScheduleItem();
         if (item.subject == target1 && item.catalog == target2)
+        {
             it->second.print();
+            cout << endl;
+        }
+            
+            
     }
 }
 
@@ -48,7 +56,10 @@ void schedule::findInstructor(string target) {
         int pos = item.instructor.find(",", 0); // Extract the last name
         lastName = item.instructor.substr(0, pos);
         if (lastName == target)
+        {
             it->second.print();
+            cout << endl;
+        }
     }
 }
 
@@ -118,23 +129,12 @@ vector<string> schedule::getFields(string line)
         tokens.push_back(token); // push the last token
     }
 
-    for (const auto field : tokens)
-        cout << field << " ";
-    cout << endl;
-
     return tokens;
 }
 
-void schedule::statistics() {
-  /*cout << "Size of the hash table: " << semesterSchedule.getSize() << endl;
-  cout << "Number of buckets in hash table: " << semesterSchedule.getBuckets()
-       << endl;
-  cout << "Load factor of the hash table: " << semesterSchedule.getLoadFactor()
-       << endl;
-  cout << "Number of collisions in the hash table: "
-       << semesterSchedule.countCollisions() << endl;
-  cout << "Longest chain: " << semesterSchedule.maxBucketSize() << endl;
-  cout << endl; */
+void schedule::statistics() 
+{
+    cout << "Not yet implemente" << endl;
 } 
 
 size_t schedule::getTableSize() { /*return semesterSchedule.getSize();*/ return 10;  }
