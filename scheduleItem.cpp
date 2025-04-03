@@ -41,5 +41,5 @@ bool scheduleItem::operator>(const SchedItem& operand2) const
 {
     string itemName1 = sItem.subject + '_' + sItem.section + '_' + sItem.session;
     string itemName2 = operand2.subject + '_' + operand2.section + '_' + operand2.session;
-    return (itemName1 >= itemName2);
+    return (itemName1 > itemName2);
 }
