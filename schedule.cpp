@@ -132,12 +132,22 @@ vector<string> schedule::getFields(string line)
 
 void schedule::statistics() 
 {
-    cout << "Not yet implemente" << endl;
+    size_t numBuckets = semesterSchedule.bucket_count();
+    double loadFactor = semesterSchedule.load_factor();
+
+    size_t numCollisions = 0;
+    size_t longestChain = 0;
+
+    for (size_t i = 0; i < numBuckets; ++i) {
+        size_t size = semesterSchedule.bucket_size(i);
+        if (size > 1) numCollisions += (size - 1);
+        if (size > longestChain) longestChain = size;
+    }
+
+    cout << "Hash Table Statistics: " << endl;
+    cout << "    Number of buckets: " << numBuckets << endl;
+    cout << "          Load Factor: " << loadFactor << endl;
+    cout << " Number of Collisions: " << numCollisions << endl;
+    cout << "        Longest Chain: " <<  longestChain << endl;
+    cout << endl;
 } 
-
-size_t schedule::getTableSize() { /*return semesterSchedule.getSize();*/ return 10;  }
-
-/* void schedule::setHashFunction)
-    std::function<size_t(const std::string &)> hashFunc) {
-  semesterSchedule.setHashFunction(hashFunc);
-}*/

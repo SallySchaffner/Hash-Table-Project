@@ -7,6 +7,16 @@
 #include <utility>
 #include "scheduleItem.h"
 
+struct CustomStringHash {
+    std::size_t operator()(const std::string& s) const {
+        std::size_t hash = 0;
+        for (char c : s) {
+            hash = hash * 31 + c;
+        }
+        return hash;
+    }
+};
+
 class schedule
 {
   public:  
@@ -18,14 +28,11 @@ class schedule
     void findSubCat(string, string);
     void findInstructor(string);
     string getKey(scheduleItem &);
-    void setHashFunction(std::function<size_t(const std::string&)> hashFunc);
-
-    size_t getTableSize();
     void statistics();
 
   private:
 
-    unordered_map<string, scheduleItem> semesterSchedule;
+    unordered_map<string, scheduleItem, CustomStringHash> semesterSchedule;
     vector<string> getFields(string line);
 };
 

@@ -51,8 +51,7 @@ int main()
             semester.print();
             break;
         case 5:
-            //semester.statistics();
-            cout << "Not yet implemented" << endl;
+            semester.statistics();
             break;
         case 6:
             break;
