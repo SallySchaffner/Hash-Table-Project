@@ -8,32 +8,31 @@
 #include "scheduleItem.h"
 
 struct CustomStringHash {
-    std::size_t operator()(const std::string& s) const {
-        std::size_t hash = 0;
-        for (char c : s) {
-            hash = hash * 31 + c;
-        }
-        return hash;
+    size_t operator()(const string& s) const {
+
+        // std::hash
+        hash<string> str_hash;
+        return str_hash(s);
     }
 };
 
 class schedule
 {
-  public:  
-    schedule(int maxSize);
+public:
+    schedule(int size);;
     void addEntry(string, scheduleItem);
     void print();
     void initSchedule(ifstream&);
     void findSub(string target);
     void findSubCat(string, string);
     void findInstructor(string);
-    string getKey(scheduleItem &);
+    string getKey(scheduleItem&);
     void statistics();
 
-  private:
-
+private:
     unordered_map<string, scheduleItem, CustomStringHash> semesterSchedule;
     vector<string> getFields(string line);
+    int numEntries = 0;  // Number of rows in spreadsheet
 };
 
 

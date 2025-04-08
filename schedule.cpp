@@ -7,7 +7,7 @@
 
 using namespace std;
 
-schedule::schedule(int size): semesterSchedule(size){};
+schedule::schedule(int size): semesterSchedule(size){ };
 
 void schedule::addEntry(string key, scheduleItem item)
 {
@@ -100,6 +100,7 @@ void schedule::initSchedule(ifstream &inFile)
         scheduleItem itemObj(fields[0], fields[1], fields[2], fields[3], fields[4], stoi(fields[5]), stoi(fields[6]), stoi(fields[7]), fields[8]);
         string key = itemObj.makeKey();
         addEntry(key, itemObj);
+        numEntries++;
     }
 }
 
@@ -145,6 +146,7 @@ void schedule::statistics()
     }
 
     cout << "Hash Table Statistics: " << endl;
+    cout << "  Spreadsheet Records: " << numEntries << endl;
     cout << "    Number of buckets: " << numBuckets << endl;
     cout << "          Load Factor: " << loadFactor << endl;
     cout << " Number of Collisions: " << numCollisions << endl;

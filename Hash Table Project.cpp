@@ -23,7 +23,6 @@ int main()
         return -1;
     }
 
-    //semester.setHashFunction(strHashFunction);
     semester.initSchedule(inFile);
 
     do
@@ -74,33 +73,6 @@ void showMenu()
     cout << "5 - Show statistics." << endl;
     cout << "6 - Quit." << endl;
     cout << endl;
-}
-
-int strHashFunction(string key)
-{
-
-    size_t hashVal = 0;
-
-
-    // Figure 5.2 hash function
-    //for (auto ch : key)
-      //hashVal += ch;
-    //Figure 5.3 hash function */
-       // hashVal = key[0] + 27 * key[1] + 729 * key[2];
-        //hashVal = key[0] + 27 * key[4] + 729 * key[8];
-        //hashVal = key[0] + key[1] + key[2] + 27 * (key[4] + key[5] + key[6]) + 729 * (key[8] + key[9] + key[10]);
-
-        // Fig 5.4 hash function
-        //for (char ch : key)
-          //hashVal = 37 * hashVal + ch;
-
-    //Default hash function
-    hashVal = (hash<string>()(key));
-
-    //A made up hash function
-  //hashVal = key[0] + key[1] + key[2];
-
-    return hashVal;
 }
 
 
